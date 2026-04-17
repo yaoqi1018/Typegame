@@ -15,7 +15,7 @@
 using namespace std;
 
 Game::Game(UserManager &um, HistoryManager &hm) : userMgr(um), historyMgr(hm) {}
-
+// 用于测试
 void Game::loadQuestions(const string &filename, vector<string> &container)
 {
     ifstream fin(filename);
@@ -80,7 +80,19 @@ void Game::start(const string &username)
     {
         char ch = _getch();
         if (ch == '\r')
-            break; // 按回车提前结束
+            break;                // 按回车提前结束
+        if (ch == 8 || ch == 127) // 退格键 (8 for Windows, 127 for Unix)
+        {
+            if (pos > 0)
+            {
+                pos--;
+                if (userInput.back() == sentence[pos])
+                    cor--;
+                userInput.pop_back();
+                cout << "\b \b"; // 回退并清除字符
+            }
+            continue;
+        }
         if (ch == sentence[pos])
         {
             SetConsoleTextAttribute(hConsole, GREEN); // 绿色
